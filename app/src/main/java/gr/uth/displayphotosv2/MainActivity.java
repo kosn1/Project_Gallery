@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -59,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
             public void onPhotoClick(String path) {
                 //Do something with photo
                 Toast.makeText(MainActivity.this,""+path,Toast.LENGTH_SHORT).show();
+
+                //open image in full size
+                Intent intent = new Intent(MainActivity.this,OpenImage.class);
+                intent.putExtra("image",path);
+                startActivity(intent);
             }
         });
 
