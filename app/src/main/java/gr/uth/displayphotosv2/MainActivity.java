@@ -11,16 +11,18 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     GalleryAdapter galleryAdapter;
-    List<String> images;
+    ArrayList<String> images;
     TextView gallery_number;
 
     private static final int READ_PERMISSION_CODE =101;
@@ -53,20 +55,35 @@ public class MainActivity extends AppCompatActivity {
         //get the path of all images
         images = ImageGallery.listOfImages(this);
 
-
-        galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
+        //onClick photo listener
+        final ImageListener listener = new ImageListener() {
             @Override
-            //photo click listener
-            public void onPhotoClick(String path) {
-                //Do something with photo
-                Toast.makeText(MainActivity.this,""+path,Toast.LENGTH_SHORT).show();
+            public void onClick(View view, int position) {
 
-                //open image in full size
-                Intent intent = new Intent(MainActivity.this,OpenImage.class);
-                intent.putExtra("image",path);
+                //prepare the Intent for OpenImage activity
+                Intent intent = new Intent(getApplicationContext(),OpenImage.class);
+                intent.putStringArrayListExtra("images",images);
+                intent.putExtra("position",position);
+                //start new Activity
                 startActivity(intent);
             }
-        });
+        };
+
+        galleryAdapter = new GalleryAdapter(this, images,listener);
+
+//        galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
+//            @Override
+//            //photo click listener
+//            public void onPhotoClick(String path) {
+//                //Do something with photo
+//                Toast.makeText(MainActivity.this,""+path,Toast.LENGTH_SHORT).show();
+//
+//                //open image in full size
+//                Intent intent = new Intent(MainActivity.this,OpenImage.class);
+//                intent.putExtra("image",path);
+//                startActivity(intent);
+//            }
+//        });
 
         //set the GalleryAdapter to RecyclerView
         recyclerView.setAdapter(galleryAdapter);
