@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Display Photos v2</string>
+    <string name="get_started">LET\'S GET STARTED</string>
+    <string name="Photos">Photos</string>
+    <string name="Videos">Videos</string>
+    <string name="Albums">Albums</string>
+    <string name="Search">Search</string>
 </resources>

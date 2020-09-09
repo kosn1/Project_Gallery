@@ -7,7 +7,7 @@ import android.provider.MediaStore;
 
 import java.util.ArrayList;
 
-public class ImageGallery {
+public class MediaGallery {
 
     //returns a list with the absolute path of each image
     public static ArrayList<String> listOfImages(Context context){
@@ -50,6 +50,7 @@ public class ImageGallery {
 
     }
 
+    //returns a list with the absolute path of each video
     public static ArrayList<String> listOfVideos(Context context){
         Uri uri;
         Cursor cursor;
@@ -59,6 +60,7 @@ public class ImageGallery {
 
         uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
+        //build the query
         String[] projection = { MediaStore.Video.VideoColumns.DATA ,
                 MediaStore.Video.Media.DISPLAY_NAME,
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
@@ -68,6 +70,7 @@ public class ImageGallery {
 
         String orderBy = MediaStore.Video.Media.DATE_TAKEN;
 
+        //fetch the data
         cursor = context.getContentResolver().query(uri, projection, //which columns to return
                 null,
                 null,
@@ -80,9 +83,10 @@ public class ImageGallery {
         //date to milliseconds
         int dateColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
 
-        //get folder name of image
+        //get folder name of video
         //column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
 
+        //add the absolute path of each video to the list
         while (cursor.moveToNext()){
             absolutePathOfVideo = cursor.getString(column_index_data);
             //System.out.println(cursor.getString(bucketColumn));

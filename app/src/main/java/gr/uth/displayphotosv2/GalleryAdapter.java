@@ -25,9 +25,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private Context context;
     private List<String> images;
     //protected PhotoListener photoListener;
-    ImageListener clickListener;
+    MediaListener clickListener;
 
-    public GalleryAdapter(Context context, List<String> images, ImageListener clickListener) {
+    public GalleryAdapter(Context context, List<String> images, MediaListener clickListener) {
         this.context = context;
         this.images = images;
         this.clickListener = clickListener;
