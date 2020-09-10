@@ -1,4 +1,4 @@
-package gr.uth.displayphotosv2;
+package gr.uth.displayphotosv2.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,10 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import gr.uth.displayphotosv2.Adapters.HomeScreenViewAdapter;
+import gr.uth.displayphotosv2.HomeButton;
+import gr.uth.displayphotosv2.R;
 
 public class LauncherActivity extends AppCompatActivity {
 

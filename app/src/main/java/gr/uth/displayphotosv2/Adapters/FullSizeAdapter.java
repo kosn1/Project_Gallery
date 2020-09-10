@@ -1,4 +1,4 @@
-package gr.uth.displayphotosv2;
+package gr.uth.displayphotosv2.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+
+import gr.uth.displayphotosv2.R;
 
 public class FullSizeAdapter extends PagerAdapter {
 

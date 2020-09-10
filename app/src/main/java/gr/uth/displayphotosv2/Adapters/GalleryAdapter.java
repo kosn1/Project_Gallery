@@ -1,4 +1,4 @@
-package gr.uth.displayphotosv2;
+package gr.uth.displayphotosv2.Adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -19,6 +19,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
+
+import gr.uth.displayphotosv2.Interfaces.MediaListener;
+import gr.uth.displayphotosv2.R;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
 

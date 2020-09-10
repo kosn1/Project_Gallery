@@ -1,4 +1,4 @@
-package gr.uth.displayphotosv2;
+package gr.uth.displayphotosv2.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+
+import gr.uth.displayphotosv2.HomeButton;
+import gr.uth.displayphotosv2.Activities.PhotosActivity;
+import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.Activities.VideoActivity;
 
 public class HomeScreenViewAdapter extends RecyclerView.Adapter<HomeScreenViewAdapter.MyViewHolder> {
 

@@ -12,16 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideoActivity"></activity>
-        <activity android:name=".LauncherActivity">
+        <activity android:name=".Activities.VideoActivity"></activity>
+        <activity android:name=".Activities.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OpenImage" />
-        <activity android:name=".PhotosActivity" />
+        <activity android:name=".Activities.OpenImage" />
+        <activity android:name=".Activities.PhotosActivity" />
     </application>
 
 </manifest>

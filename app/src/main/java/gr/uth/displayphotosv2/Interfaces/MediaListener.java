@@ -1,4 +1,4 @@
-package gr.uth.displayphotosv2;
+package gr.uth.displayphotosv2.Interfaces;
 
 import android.view.View;
 
