@@ -27,7 +27,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private Context context;
     private List<String> images;
-    //protected PhotoListener photoListener;
     MediaListener clickListener;
 
     public GalleryAdapter(Context context, List<String> images, MediaListener clickListener) {
@@ -65,13 +64,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 })
                 .into(holder.image);
 
-        //set click listener for the photo
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                photoListener.onPhotoClick(image);
-//            }
-//        });
     }
 
     @Override
@@ -102,7 +94,4 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
 
-//    public interface PhotoListener{
-//        void onPhotoClick(String path);
-//    }
 }
