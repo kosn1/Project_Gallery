@@ -1,5 +1,6 @@
 package gr.uth.displayphotosv2.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
@@ -30,6 +31,11 @@ public class OpenImage extends Activity {
             Intent intent = getIntent();
             images = intent.getStringArrayListExtra("images");
             position = intent.getIntExtra("position",0);
+
+        //restore data on screen rotation
+        }else {
+            images = savedInstanceState.getStringArrayList("images");
+            position = savedInstanceState.getInt("position");
         }
 
         //layout manager that provides slide functionality between photos
@@ -42,5 +48,12 @@ public class OpenImage extends Activity {
         //set the currently selected image
         viewPager.setCurrentItem(position,true);
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("images",images);
+        outState.putInt("position",position);
     }
 }
