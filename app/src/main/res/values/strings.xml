@@ -8,4 +8,5 @@
     <string name="Tag">Tag</string>
     <string name="Date">Date</string>
     <string name="Location">Location</string>
+    <string name="addTagBtn">Add Tags</string>
 </resources>

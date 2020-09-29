@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--<EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tagInput"
+            android:hint="@string/Tag" />>-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addTagBtn"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/design_default_color_secondary"
+            android:textColor="@color/material_on_surface_emphasis_high_type"
+            android:text="@string/addTagBtn"/>
+
+        <!--<com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Albums"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.MaterialComponents.Chip.Entry"
+            app:chipIcon="@drawable/tag_icon"
+            app:closeIcon="@drawable/ic_baseline_clear_24"/>-->
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chip_grp">
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
+import gr.uth.displayphotosv2.DatabaseHelper;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
 
@@ -28,6 +29,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private Context context;
     private List<String> images;
     MediaListener clickListener;
+
+    DatabaseHelper db;
 
     public GalleryAdapter(Context context, List<String> images, MediaListener clickListener) {
         this.context = context;
@@ -64,6 +67,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 })
                 .into(holder.image);
 
+        //add file path to database if not exists already
+        if(!db.checkIfPathExistsAlready(image)){
+            db.insertNewFile(image);
+        }
+
     }
 
     @Override
@@ -84,6 +92,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             progressBar = itemView.findViewById(R.id.progBar);
 
             itemView.setOnClickListener(this);
+
+            /*Initializing a helper object using DatabaseHelper.getInstance(context),
+            guarantees that only one database helper will exist
+            across the entire application's lifecycle*/
+            db = DatabaseHelper.getInstance(context);
         }
 
 

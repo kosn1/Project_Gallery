@@ -26,8 +26,8 @@ public class LauncherActivity extends AppCompatActivity {
         //create Homescreen buttons and store them into an arraylist
         homeButtonList = new ArrayList<>();
         homeButtonList.add(new HomeButton("Photos",R.drawable.photo2));
-        homeButtonList.add(new HomeButton("Videos",R.drawable.video3));
-        homeButtonList.add(new HomeButton("Albums",R.drawable.album));
+        homeButtonList.add(new HomeButton("Videos",R.drawable.video2));
+        homeButtonList.add(new HomeButton("Albums",R.drawable.album2));
         homeButtonList.add(new HomeButton("Search",R.drawable.search));
 
         RecyclerView rv = findViewById(R.id.buttons_list);
