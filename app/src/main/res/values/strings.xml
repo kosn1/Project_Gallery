@@ -5,8 +5,12 @@
     <string name="Videos">Videos</string>
     <string name="Albums">Albums</string>
     <string name="Search">Search</string>
-    <string name="Tag">Tag</string>
+    <string name="Tag">Add tags</string>
     <string name="Date">Date</string>
     <string name="Location">Location</string>
-    <string name="addTagBtn">Add Tags</string>
+    <string name="addTagBtn">Save Tags</string>
+    <string name="cancel">Cancel</string>
+    <string name="tag_groups">Tag Groups</string>
+    <string name="current_tags">Current Tags</string>
+    <string name="no_current_tags">There are no tags for this file.</string>
 </resources>

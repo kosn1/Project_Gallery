@@ -91,10 +91,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    //INSERT NEW TAG
+    public void insertNewTag(String tagName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TAG_NAME,tagName);
+        db.insert(TAG_TABLE,null,contentValues);
+        db.close();
+    }
+
     //get Tags
     public Cursor getAllTags(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from "+TAG_TABLE,null );
+    }
+
+    // returns all tags of a file
+    public Cursor getTagsOfFile(Integer fileID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select "+TAG_OF_FILE_TAG_ID+" from "+TAG_OF_FILE_TABLE+
+                " where "+TAG_OF_FILE_FILE_ID+" = "+fileID,null);
     }
 
     //insert new File path
@@ -133,10 +149,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    //Remove tag from file
+    public Integer deleteTagFromFile(String ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TAG_OF_FILE_TABLE,TAG_OF_FILE_TAG_ID + "=?",new String[] {ID});
+    }
+
     public Integer getTagId(String tag) {
         Integer id=0;
-        // Select Query
-        String selectQuery = "SELECT  "+TAG_ID+" FROM " + TAG_TABLE+" WHERE "+TAG_NAME+" = '"+tag+"'";
+        // Select Query which is case insensitive for searching strings
+        String selectQuery = "SELECT "+TAG_ID+" FROM " + TAG_TABLE+" WHERE LOWER("+TAG_NAME+") LIKE LOWER('%"+tag+"%')";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -146,6 +168,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return id;
+    }
+
+    //Get tag by tagID
+    public Cursor getTag(Integer id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select * from "+TAG_TABLE+" where "+TAG_ID+" = "+id,null);
     }
 
     public Integer getFileID(String filePath) {
@@ -170,6 +198,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean check=false;
         while (result.moveToNext()){
             if(result.getInt(0)==tagID && result.getInt(1)==fileID){
+                check=true;
+                break;
+            }
+        }
+        result.close();
+        db.close();
+        return check;
+    }
+
+    //check if tag's name is already stored in the database
+    public boolean checkTagName(String tagName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from "+TAG_TABLE,null);
+        boolean check=false;
+        while (result.moveToNext()){
+            if(result.getString(1).equalsIgnoreCase(tagName)){
                 check=true;
                 break;
             }
