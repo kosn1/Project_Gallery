@@ -106,11 +106,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("select * from "+TAG_TABLE,null );
     }
 
-    // returns all tags of a file
+    // returns all tags(IDs and names) of a file
     public Cursor getTagsOfFile(Integer fileID){
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select "+TAG_OF_FILE_TAG_ID+" from "+TAG_OF_FILE_TABLE+
-                " where "+TAG_OF_FILE_FILE_ID+" = "+fileID,null);
+        return db.rawQuery("select * from "+TAG_TABLE+
+                " INNER JOIN "+TAG_OF_FILE_TABLE+
+                " ON " +TAG_TABLE+"."+TAG_ID+"="+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_TAG_ID+
+                " WHERE "+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_FILE_ID+" = "+fileID,null);
     }
 
     //insert new File path
@@ -158,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Integer getTagId(String tag) {
         Integer id=0;
         // Select Query which is case insensitive for searching strings
-        String selectQuery = "SELECT "+TAG_ID+" FROM " + TAG_TABLE+" WHERE LOWER("+TAG_NAME+") LIKE LOWER('%"+tag+"%')";
+        String selectQuery = "SELECT "+TAG_ID+" FROM " + TAG_TABLE+" WHERE LOWER("+TAG_NAME+") = LOWER('"+tag+"')";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
