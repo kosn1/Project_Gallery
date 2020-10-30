@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME="Gallery.db";
@@ -15,13 +18,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FILE_TABLE="file";
     private static final String FILE_ID ="file_id";
     private static final String FILE_PATH ="file_path";
+    private static final String FILE_DATE ="file_date";
 
     //TAG TABLE
     private static final String TAG_TABLE="tag";
     private static final String TAG_ID ="tag_id";
     private static final String TAG_NAME ="tag_name";
 
-    //TAGofPHOTO TABLE
+    //TAGofFILE TABLE
     private static final String TAG_OF_FILE_TABLE="tag_of_file";
     private static final String TAG_OF_FILE_TAG_ID ="tag_id";
     private static final String TAG_OF_FILE_FILE_ID ="file_id";
@@ -50,7 +54,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //CREATE FILE TABLE
         db.execSQL("CREATE TABLE " + FILE_TABLE +
-                " ("+ FILE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "+ FILE_PATH +" TEXT)");
+                " ("+ FILE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + FILE_PATH +" TEXT, "
+                + FILE_DATE+" DATE)");
 
         //CREATE TAG TABLE
         db.execSQL("CREATE TABLE " + TAG_TABLE +
@@ -123,6 +129,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(FILE_TABLE,null,contentValues);
         db.close();
         return result != -1;
+    }
+
+    //add date to file
+    public void insertDateToFile(Integer fileID,Date date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FILE_DATE,dateFormat.format(date));
+        db.update(FILE_TABLE,contentValues,FILE_ID+" = "+fileID,null);
+        db.close();
+    }
+
+    //Get date by fileID
+    public Cursor getDateOfFile(Integer id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select " + FILE_DATE + " from "+FILE_TABLE+
+                " where "+FILE_ID+" = "+id,null);
     }
 
     //check if file path has already been inserted to db

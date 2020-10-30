@@ -22,6 +22,7 @@ import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.DatabaseHelper;
+import gr.uth.displayphotosv2.Dialogs.DateDialog;
 import gr.uth.displayphotosv2.R;
 import gr.uth.displayphotosv2.Dialogs.TagDialog;
 
@@ -128,7 +129,9 @@ public class FullSizeAdapter extends PagerAdapter {
 
                     case R.id.date:
 
-                        System.out.println("Date");
+                        DateDialog dateDialog = new DateDialog(context,inflater);
+                        dateDialog.displayDateDialog(filePath);
+
                         break;
 
                     case R.id.location:
