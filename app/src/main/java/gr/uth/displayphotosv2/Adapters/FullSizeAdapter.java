@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.DatabaseHelper;
 import gr.uth.displayphotosv2.Dialogs.DateDialog;
+import gr.uth.displayphotosv2.Dialogs.LocationDialog;
 import gr.uth.displayphotosv2.R;
 import gr.uth.displayphotosv2.Dialogs.TagDialog;
 
@@ -136,7 +137,9 @@ public class FullSizeAdapter extends PagerAdapter {
 
                     case R.id.location:
 
-                        System.out.println("Location");
+                        LocationDialog locationDialog = new LocationDialog(context,inflater);
+                        locationDialog.displayLocationDialog(filePath);
+
                         break;
                 }
                 return true;

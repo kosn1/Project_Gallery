@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FILE_ID ="file_id";
     private static final String FILE_PATH ="file_path";
     private static final String FILE_DATE ="file_date";
+    private static final String FILE_LOCATION ="file_location";
 
     //TAG TABLE
     private static final String TAG_TABLE="tag";
@@ -56,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + FILE_TABLE +
                 " ("+ FILE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + FILE_PATH +" TEXT, "
+                + FILE_LOCATION +" TEXT, "
                 + FILE_DATE+" DATE)");
 
         //CREATE TAG TABLE
@@ -137,6 +139,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         ContentValues contentValues = new ContentValues();
         contentValues.put(FILE_DATE,dateFormat.format(date));
+        db.update(FILE_TABLE,contentValues,FILE_ID+" = "+fileID,null);
+        db.close();
+    }
+
+    //add location to file
+    public void addLocationToFile(Integer fileID,String location) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FILE_LOCATION,location);
         db.update(FILE_TABLE,contentValues,FILE_ID+" = "+fileID,null);
         db.close();
     }

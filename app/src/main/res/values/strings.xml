@@ -13,4 +13,7 @@
     <string name="tag_groups">Tag Groups</string>
     <string name="current_tags">Current Tags</string>
     <string name="no_current_tags">There are no tags for this file.</string>
+    <string name="location_queryHint">Where are you?</string>
+    <string name="location_dialog_title">Search for location</string>
+    <string name="close_button">close button</string>
 </resources>
