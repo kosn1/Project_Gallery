@@ -16,4 +16,5 @@
     <string name="location_queryHint">Where are you?</string>
     <string name="location_dialog_title">Search for location</string>
     <string name="close_button">close button</string>
+    <string name="location_textview">at</string>
 </resources>

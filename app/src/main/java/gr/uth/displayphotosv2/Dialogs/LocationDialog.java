@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.CursorAdapter;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -31,6 +32,8 @@ public class LocationDialog extends AlertDialog {
     LayoutInflater inflater;
     SearchView searchView;
     ImageButton closeDialogBtn;
+    TextView locationTextView;
+    ImageButton deleteLocationBtn;
 
     SimpleCursorAdapter mAdapter;
 
@@ -49,11 +52,10 @@ public class LocationDialog extends AlertDialog {
 
     public void displayLocationDialog(String filepath){
         //display tag dialog window
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AppTheme);
         final View dialogView = inflater.inflate(R.layout.location_dialog, null);
         alert = builder.setView(dialogView)
                        .show();
-        moveToTop();
 
         /*Allow the window to be resized when keyboard is shown,
           so that its contents are not covered by the keyboard*/
@@ -65,8 +67,16 @@ public class LocationDialog extends AlertDialog {
         searchView.setSuggestionsAdapter(mAdapter);
         searchView.setIconifiedByDefault(false);
 
+        //load current location of file
+        locationTextView = dialogView.findViewById(R.id.location_txtview);
+        deleteLocationBtn = dialogView.findViewById(R.id.remove_location_btn);
+        loadCurrentLocation(filepath);
+
         //select suggestion Listener
         selectSuggestion(filepath);
+
+        //remove location button listener
+        deleteLocation(filepath);
 
         //close button Listener
         closeDialogBtn = dialogView.findViewById(R.id.close_location_dialog);
@@ -74,12 +84,19 @@ public class LocationDialog extends AlertDialog {
 
     }
 
-    //Push dialog to the top of the screen
-    public void moveToTop(){
-        Window window = alert.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.TOP;
-        window.setAttributes(wlp);
+    //get the location of the selected photo/video (if any) and display it
+    public void loadCurrentLocation(String filepath){
+        Cursor result = databaseHelper.getLocationOfFile(databaseHelper.getFileID(filepath));
+        String currentLocation="";
+        while (result.moveToNext()){
+            currentLocation = result.getString(0);
+        }
+
+        if(currentLocation!=null){
+            locationTextView.append(" "+currentLocation);
+            locationTextView.setVisibility(View.VISIBLE);
+            deleteLocationBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     /*returns a SimpleCursorAdapter object provided with a query filter,
@@ -149,6 +166,17 @@ public class LocationDialog extends AlertDialog {
             }
         }
         return c;
+    }
+
+    //deletes location from file and closes the dialog window
+    public void deleteLocation(final String filepath){
+        deleteLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseHelper.deleteLocationFromFile(databaseHelper.getFileID(filepath));
+                alert.cancel();
+            }
+        });
     }
 
     //close button, dismisses the dialog window without saving any changes

@@ -159,6 +159,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " where "+FILE_ID+" = "+id,null);
     }
 
+    //Get location by fileID
+    public Cursor getLocationOfFile(Integer id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select " + FILE_LOCATION + " from "+FILE_TABLE+
+                " where "+FILE_ID+" = "+id,null);
+    }
+
+    //Remove location from file
+    public void deleteLocationFromFile(Integer fileID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.putNull(FILE_LOCATION);
+        db.update(FILE_TABLE,contentValues,FILE_ID+" = "+fileID,null);
+        db.close();
+    }
+
     //check if file path has already been inserted to db
     public boolean checkIfPathExistsAlready(String filePath){
         SQLiteDatabase db = this.getReadableDatabase();
