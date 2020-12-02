@@ -1,14 +1,13 @@
 package gr.uth.displayphotosv2.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -17,7 +16,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
@@ -27,29 +25,31 @@ import gr.uth.displayphotosv2.Dialogs.LocationDialog;
 import gr.uth.displayphotosv2.R;
 import gr.uth.displayphotosv2.Dialogs.TagDialog;
 
+/*The adapter which supplies views for the viewpager*/
 public class FullSizeAdapter extends PagerAdapter {
 
     Context context;
-    ArrayList<String> images;
+    ArrayList<String> files;
+    private final String type;
     LayoutInflater inflater;
 
-    Button saveTags;
-    Button cancel;
-    ChipGroup chipGroup;
-    ChipGroup currentTagsChipGroup;
-    TextView currentTagsTextView;
-    EditText tagInput;
+    ImageView playArrow;
+    ImageView imageView;
 
     DatabaseHelper databaseHelper;
 
-    public FullSizeAdapter(Context context, ArrayList<String> images){
+    /* The constructor of FullSizeAdapter requires 3 parameters:the current context of the app,
+    * a list with the absolute paths of the files that are being displayed and the type of the
+    * files(photo/video) */
+    public FullSizeAdapter(Context context, ArrayList<String> files, String type){
         this.context = context;
-        this.images = images;
+        this.files = files;
+        this.type = type;
     }
 
     @Override
     public int getCount() {
-        return images.size();
+        return files.size();
     }
 
     @Override
@@ -74,10 +74,18 @@ public class FullSizeAdapter extends PagerAdapter {
         //load full_item.xml
         View v = inflater.inflate(R.layout.full_item,null);
 
-        //display image in full screen
-        ImageView imageView = v.findViewById(R.id.img);
+        /*if this is a video file set a play button on top of its thumbnail, and a listener
+        for this button as well*/
+        if(type.equals("video")){
+            playArrow = v.findViewById(R.id.video_play_arrow);
+            playArrow.setVisibility(View.VISIBLE);
+            playVideo(files.get(position));
+        }
+
+        //display image/video in full screen
+        imageView = v.findViewById(R.id.img);
         Glide.with(context)
-                .load(images.get(position))
+                .load(files.get(position))
                 .apply(new RequestOptions().centerInside())
                 .into(imageView);
 
@@ -86,13 +94,13 @@ public class FullSizeAdapter extends PagerAdapter {
         across the entire application's lifecycle*/
         databaseHelper = DatabaseHelper.getInstance(context);
         //add file path to database if not exists already
-        if(!databaseHelper.checkIfPathExistsAlready(images.get(position))){
-            databaseHelper.insertNewFile(images.get(position));
+        if(!databaseHelper.checkIfPathExistsAlready(files.get(position))){
+            databaseHelper.insertNewFile(files.get(position));
         }
 
         //set Listener for BottomNavigationView
         BottomNavigationView bottomNavigationView = v.findViewById(R.id.bottom_navigation);
-        onNavigationItemClicked(bottomNavigationView,images.get(position));
+        onNavigationItemClicked(bottomNavigationView, files.get(position));
 
         //Convert from ViewGroup to Viewpager the containing View in which the page will be shown
         ViewPager vp = (ViewPager) container;
@@ -143,6 +151,18 @@ public class FullSizeAdapter extends PagerAdapter {
                         break;
                 }
                 return true;
+            }
+        });
+    }
+
+    //play the selected video by selecting one of the available apps for playing videos
+    public void playVideo(final String filepath){
+        playArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(filepath), "video/*");
+                context.startActivity(intent);
             }
         });
     }

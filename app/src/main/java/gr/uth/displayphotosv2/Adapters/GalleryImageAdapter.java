@@ -20,19 +20,16 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.List;
 
-import gr.uth.displayphotosv2.DatabaseHelper;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
 
-public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
+public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapter.ViewHolder>{
 
     private Context context;
     private List<String> images;
     MediaListener clickListener;
 
-    DatabaseHelper db;
-
-    public GalleryAdapter(Context context, List<String> images, MediaListener clickListener) {
+    public GalleryImageAdapter(Context context, List<String> images, MediaListener clickListener) {
         this.context = context;
         this.images = images;
         this.clickListener = clickListener;
@@ -42,7 +39,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(
-                LayoutInflater.from(context).inflate(R.layout.gallery_item,parent,false)
+                LayoutInflater.from(context).inflate(R.layout.gallery_image,parent,false)
         );
     }
 

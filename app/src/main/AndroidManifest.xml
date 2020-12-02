@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.AlbumActivity"></activity>
+        <activity android:name=".Activities.AlbumActivity" />
         <activity android:name=".Activities.VideoActivity" />
         <activity android:name=".Activities.LauncherActivity">
             <intent-filter>
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.OpenImage" />
+        <activity android:name=".Activities.OpenFile" />
         <activity android:name=".Activities.PhotosActivity" />
     </application>
 
