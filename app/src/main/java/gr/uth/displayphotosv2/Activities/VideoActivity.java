@@ -17,7 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import gr.uth.displayphotosv2.Adapters.GalleryVideoAdapter;
+import gr.uth.displayphotosv2.Adapters.GalleryAdapter;
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.MediaGallery;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
@@ -25,8 +26,8 @@ import gr.uth.displayphotosv2.R;
 public class VideoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private GalleryVideoAdapter galleryVideoAdapter;
-    private ArrayList<String> videos;
+    private GalleryAdapter galleryAdapter;
+    private ArrayList<File> videos;
     private TextView numberOfVideos;
 
     private static final int READ_PERMISSION_CODE =101;
@@ -66,18 +67,17 @@ public class VideoActivity extends AppCompatActivity {
 
                 //prepare the Intent for OpenFile activity
                 Intent intent = new Intent(getApplicationContext(), OpenFile.class);
-                intent.putStringArrayListExtra("images",videos);
+                intent.putExtra("files",videos);
                 intent.putExtra("position",position);
-                intent.putExtra("type","video");
                 //start new Activity
                 startActivity(intent);
             }
         };
 
-        galleryVideoAdapter = new GalleryVideoAdapter(this, videos, listener);
+        galleryAdapter = new GalleryAdapter(this, videos, listener);
 
         //set the GalleryAdapter to RecyclerView
-        recyclerView.setAdapter(galleryVideoAdapter);
+        recyclerView.setAdapter(galleryAdapter);
         //Number of Videos textview
         numberOfVideos.setText("Videos ("+videos.size()+")");
     }

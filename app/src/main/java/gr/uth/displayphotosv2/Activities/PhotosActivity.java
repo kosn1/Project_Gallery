@@ -17,7 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import gr.uth.displayphotosv2.Adapters.GalleryImageAdapter;
+import gr.uth.displayphotosv2.Adapters.GalleryAdapter;
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.MediaGallery;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
@@ -25,8 +26,8 @@ import gr.uth.displayphotosv2.R;
 public class PhotosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private GalleryImageAdapter galleryImageAdapter;
-    private ArrayList<String> images;
+    private GalleryAdapter galleryAdapter;
+    private ArrayList<File> images;
     private TextView numberOfImages;
 
     private static final int READ_PERMISSION_CODE =101;
@@ -66,18 +67,17 @@ public class PhotosActivity extends AppCompatActivity {
 
                 //prepare the Intent for OpenFile activity
                 Intent intent = new Intent(getApplicationContext(), OpenFile.class);
-                intent.putStringArrayListExtra("images",images);
+                intent.putExtra("files",images);
                 intent.putExtra("position",position);
-                intent.putExtra("type","image");
                 //start new Activity
                 startActivity(intent);
             }
         };
 
-        galleryImageAdapter = new GalleryImageAdapter(this, images, listener);
+        galleryAdapter = new GalleryAdapter(this, images, listener);
 
         //set the GalleryAdapter to RecyclerView
-        recyclerView.setAdapter(galleryImageAdapter);
+        recyclerView.setAdapter(galleryAdapter);
         //Number of Photos textview
         numberOfImages.setText("Photos ("+images.size()+")");
     }

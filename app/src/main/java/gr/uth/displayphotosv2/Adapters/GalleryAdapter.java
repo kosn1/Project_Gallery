@@ -18,37 +18,41 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.List;
+import java.util.ArrayList;
 
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.Type;
 
-public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapter.ViewHolder>{
+public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
 
     private Context context;
-    private List<String> images;
+    private ArrayList<File> files;
     MediaListener clickListener;
 
-    public GalleryImageAdapter(Context context, List<String> images, MediaListener clickListener) {
+    public GalleryAdapter(Context context, ArrayList<File> files, MediaListener clickListener) {
         this.context = context;
-        this.images = images;
+        this.files = files;
         this.clickListener = clickListener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(
-                LayoutInflater.from(context).inflate(R.layout.gallery_image,parent,false)
+    public GalleryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new GalleryAdapter.ViewHolder(
+                LayoutInflater.from(context).inflate(R.layout.gallery_item,parent,false)
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final String image = images.get(position);
+    public void onBindViewHolder(@NonNull GalleryAdapter.ViewHolder holder, int position) {
+        final String filePath = files.get(position).getPath();
+        final Type fileType = files.get(position).getType();
         final ProgressBar progressBar = holder.progressBar;
-        //display images using Glide library
-        Glide.with(context).load(image)
+        final ImageView playArrow = holder.playArrow;
+        //display photos/GIFS/videos using Glide library
+        Glide.with(context).load(filePath)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -57,30 +61,37 @@ public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapte
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        //make progress bar invisible when image loads
+                        //make progress bar invisible when file loads
                         progressBar.setVisibility(View.GONE);
+                        //make play button visible if this is a video file
+                        if(fileType == Type.VIDEO){
+                            playArrow.setVisibility(View.VISIBLE);
+                        }
+
                         return false;
                     }
                 })
-                .into(holder.image);
+                .into(holder.file);
 
     }
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return files.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ImageView image;
+        ImageView file;
+        ImageView playArrow;
         ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            //ImageView and ProgressBar for each item within the recyclerview
-            image = itemView.findViewById(R.id.image);
+            //ImageView, ProgressBar and play button for each item within the recyclerview
+            file = itemView.findViewById(R.id.file_item);
+            playArrow = itemView.findViewById(R.id.video_play);
             progressBar = itemView.findViewById(R.id.progBar);
 
             itemView.setOnClickListener(this);
@@ -89,9 +100,8 @@ public class GalleryImageAdapter extends RecyclerView.Adapter<GalleryImageAdapte
 
         @Override
         public void onClick(View v) {
-            //pass the view and photo's position in the recyclerview
+            //pass the view and item's position in the recyclerview
             clickListener.onClick(v,getAdapterPosition());
         }
     }
-
 }

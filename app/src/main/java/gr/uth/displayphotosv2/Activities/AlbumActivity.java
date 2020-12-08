@@ -15,7 +15,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import gr.uth.displayphotosv2.Adapters.AlbumViewAdapter;
 import gr.uth.displayphotosv2.MediaGallery;
@@ -56,18 +58,24 @@ public class AlbumActivity extends AppCompatActivity {
         //album names(keys) and their thumbnails(values) are stored in a HashMap collection
         HashMap<String, String> albumsList = MediaGallery.getListOfAlbums(this);
 
-        //get album names(keys) from HashMap and store them into an ArrayList
-        Set<String> keySet = albumsList.keySet();
-        ArrayList<String> albumsNameList = new ArrayList<> (keySet);
-
-        //get album thumbnails(values) from HashMap and store them into an ArrayList
-        Collection<String> values = albumsList.values();
-        ArrayList<String> listOfThumbnails = new ArrayList<>(values);
-
         //get HashMap with album names(keys) and their sizes(number of items/values)
         HashMap<String, Integer> albumsSize = MediaGallery.getSizeOfAlbums(this);
-        //get sizes(values) from HashMap and store them into an ArrayList
-        Collection<Integer> valuesSize = albumsSize.values();
+
+        /*sort the keys of the 2 hashmaps alphabetically, so we have the same keys(album names)
+        in the same order between the 2 Maps*/
+        Map<String, String> sortedAlbumsList = new TreeMap<>(albumsList);
+        Map<String, Integer> sortedAlbumsSize = new TreeMap<>(albumsSize);
+
+        //get album names(keys) from sorted TreeMap and store them into an ArrayList
+        Set<String> keySet = sortedAlbumsList.keySet();
+        ArrayList<String> albumsNameList = new ArrayList<> (keySet);
+
+        //get album thumbnails(values) from sorted TreeMap and store them into an ArrayList
+        Collection<String> values = sortedAlbumsList.values();
+        ArrayList<String> listOfThumbnails = new ArrayList<>(values);
+
+        //get sizes(values) from sorted TreeMap and store them into an ArrayList
+        Collection<Integer> valuesSize = sortedAlbumsSize.values();
         ArrayList<Integer> listOfSizes = new ArrayList<>(valuesSize);
 
         //set the AlbumViewAdapter to RecyclerView

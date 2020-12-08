@@ -19,18 +19,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.DatabaseHelper;
 import gr.uth.displayphotosv2.Dialogs.DateDialog;
 import gr.uth.displayphotosv2.Dialogs.LocationDialog;
 import gr.uth.displayphotosv2.R;
 import gr.uth.displayphotosv2.Dialogs.TagDialog;
+import gr.uth.displayphotosv2.Type;
 
 /*The adapter which supplies views for the viewpager*/
 public class FullSizeAdapter extends PagerAdapter {
 
     Context context;
-    ArrayList<String> files;
-    private final String type;
+    ArrayList<File> files;
     LayoutInflater inflater;
 
     ImageView playArrow;
@@ -41,10 +42,9 @@ public class FullSizeAdapter extends PagerAdapter {
     /* The constructor of FullSizeAdapter requires 3 parameters:the current context of the app,
     * a list with the absolute paths of the files that are being displayed and the type of the
     * files(photo/video) */
-    public FullSizeAdapter(Context context, ArrayList<String> files, String type){
+    public FullSizeAdapter(Context context, ArrayList<File> files){
         this.context = context;
         this.files = files;
-        this.type = type;
     }
 
     @Override
@@ -76,16 +76,16 @@ public class FullSizeAdapter extends PagerAdapter {
 
         /*if this is a video file set a play button on top of its thumbnail, and a listener
         for this button as well*/
-        if(type.equals("video")){
+        if(files.get(position).getType()== Type.VIDEO){
             playArrow = v.findViewById(R.id.video_play_arrow);
             playArrow.setVisibility(View.VISIBLE);
-            playVideo(files.get(position));
+            playVideo(files.get(position).getPath());
         }
 
         //display image/video in full screen
         imageView = v.findViewById(R.id.img);
         Glide.with(context)
-                .load(files.get(position))
+                .load(files.get(position).getPath())
                 .apply(new RequestOptions().centerInside())
                 .into(imageView);
 
@@ -94,13 +94,13 @@ public class FullSizeAdapter extends PagerAdapter {
         across the entire application's lifecycle*/
         databaseHelper = DatabaseHelper.getInstance(context);
         //add file path to database if not exists already
-        if(!databaseHelper.checkIfPathExistsAlready(files.get(position))){
-            databaseHelper.insertNewFile(files.get(position));
+        if(!databaseHelper.checkIfPathExistsAlready(files.get(position).getPath())){
+            databaseHelper.insertNewFile(files.get(position).getPath());
         }
 
         //set Listener for BottomNavigationView
         BottomNavigationView bottomNavigationView = v.findViewById(R.id.bottom_navigation);
-        onNavigationItemClicked(bottomNavigationView, files.get(position));
+        onNavigationItemClicked(bottomNavigationView, files.get(position).getPath());
 
         //Convert from ViewGroup to Viewpager the containing View in which the page will be shown
         ViewPager vp = (ViewPager) container;

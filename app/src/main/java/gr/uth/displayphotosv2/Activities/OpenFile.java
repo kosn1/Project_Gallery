@@ -10,42 +10,40 @@ import android.os.Bundle;
 import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.Adapters.FullSizeAdapter;
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.R;
 
 public class OpenFile extends Activity {
 
     ViewPager viewPager;
-    ArrayList<String> images;
+    ArrayList<File> files;
     private int position;
-    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_open_image);
+        setContentView(R.layout.activity_open_file);
 
         if(savedInstanceState==null){
 
-            /*get intent extras, arraylist with the absolute path of each file,
-             the position of the file which was clicked and the type of the file(photo/video)
-             */
+            /*get intent extras, arraylist with File items and the position of the file
+            which was clicked*/
             Intent intent = getIntent();
-            images = intent.getStringArrayListExtra("images");
+            files = (ArrayList<File>) intent.getSerializableExtra("files");
             position = intent.getIntExtra("position",0);
-            type = intent.getStringExtra("type");
+
 
         //restore data on screen rotation
         }else {
-            images = savedInstanceState.getStringArrayList("images");
+            files = (ArrayList<File>)savedInstanceState.getSerializable("files");
             position = savedInstanceState.getInt("position");
-            type = savedInstanceState.getString("type");
         }
 
         //layout manager that provides slide functionality between photos
         viewPager = findViewById(R.id.viewPager);
 
         //create and set the adapter that will supply views for the viewpager
-        FullSizeAdapter fullSizeAdapter = new FullSizeAdapter(this,images,type);
+        FullSizeAdapter fullSizeAdapter = new FullSizeAdapter(this, files);
         viewPager.setAdapter(fullSizeAdapter);
 
         //set the currently selected image
@@ -56,8 +54,7 @@ public class OpenFile extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("images",images);
+        outState.putSerializable("files", files);
         outState.putInt("position",position);
-        outState.putString("type",type);
     }
 }
