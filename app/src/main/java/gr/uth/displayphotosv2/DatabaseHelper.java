@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FILE_TABLE="file";
     private static final String FILE_ID ="file_id";
     private static final String FILE_PATH ="file_path";
+    private static final String FILE_TYPE ="file_type";
     private static final String FILE_DATE ="file_date";
     private static final String FILE_LOCATION ="file_location";
 
@@ -57,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + FILE_TABLE +
                 " ("+ FILE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + FILE_PATH +" TEXT, "
+                + FILE_TYPE +" TEXT, "
                 + FILE_LOCATION +" TEXT, "
                 + FILE_DATE+" DATE)");
 
@@ -123,11 +125,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " WHERE "+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_FILE_ID+" = "+fileID,null);
     }
 
-    //insert new File path
-    public boolean insertNewFile(String filePath) {
+    //insert new File
+    public boolean insertNewFile(String filePath, String type) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(FILE_PATH,filePath);
+        contentValues.put(FILE_TYPE,type);
         long result = db.insert(FILE_TABLE,null,contentValues);
         db.close();
         return result != -1;

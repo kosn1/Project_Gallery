@@ -15,6 +15,7 @@ import gr.uth.displayphotosv2.Adapters.GalleryAdapter;
 import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.Type;
 
 public class OpenAlbumActivity extends AppCompatActivity {
 
@@ -63,7 +64,40 @@ public class OpenAlbumActivity extends AppCompatActivity {
 
         //set the GalleryAdapter to RecyclerView
         recyclerView.setAdapter(galleryAdapter);
+
         //Number of photos/videos textview
-        numberOfFiles.setText("Photos ("+ files.size()+")");
+        int videoCounter = 0;
+        int imageCounter= 0;
+        for(File f: files){
+            if(f.getType() == Type.IMAGE){
+                imageCounter++;
+            }else {
+                videoCounter++;
+            }
+        }
+        if(imageCounter == 0){
+            if(videoCounter==1){
+                numberOfFiles.setText(videoCounter+" Video");
+            }else {
+                numberOfFiles.setText(videoCounter+" Videos");
+            }
+        }else if(videoCounter == 0) {
+            if(imageCounter==1){
+                numberOfFiles.setText(imageCounter + " Photo");
+            }else {
+                numberOfFiles.setText(imageCounter + " Photos");
+            }
+        }
+        else {
+            if(videoCounter==1 && imageCounter==1){
+                numberOfFiles.setText(imageCounter+" Photo, "+ videoCounter+" Video");
+            }else if(imageCounter==1  && videoCounter!=1){
+                numberOfFiles.setText(imageCounter+" Photo, "+ videoCounter+" Videos");
+            }else if(imageCounter!=1  && videoCounter==1){
+                numberOfFiles.setText(imageCounter+" Photos, "+ videoCounter+" Video");
+            }else {
+                numberOfFiles.setText(imageCounter+" Photos, "+ videoCounter+" Videos");
+            }
+        }
     }
 }

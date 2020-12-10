@@ -93,9 +93,9 @@ public class FullSizeAdapter extends PagerAdapter {
         guarantees that only one database helper will exist
         across the entire application's lifecycle*/
         databaseHelper = DatabaseHelper.getInstance(context);
-        //add file path to database if not exists already
+        //add file to database if not exists already
         if(!databaseHelper.checkIfPathExistsAlready(files.get(position).getPath())){
-            databaseHelper.insertNewFile(files.get(position).getPath());
+            databaseHelper.insertNewFile(files.get(position).getPath(), files.get(position).getType().toString());
         }
 
         //set Listener for BottomNavigationView
