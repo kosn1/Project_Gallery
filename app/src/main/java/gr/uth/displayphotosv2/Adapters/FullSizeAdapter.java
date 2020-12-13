@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.ortiz.touchview.TouchImageView;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class FullSizeAdapter extends PagerAdapter {
     LayoutInflater inflater;
 
     ImageView playArrow;
-    ImageView imageView;
+    TouchImageView imageView;
 
     DatabaseHelper databaseHelper;
 
@@ -72,7 +73,8 @@ public class FullSizeAdapter extends PagerAdapter {
         inflater =  (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //load full_item.xml
-        View v = inflater.inflate(R.layout.full_item,null);
+        final View v = inflater.inflate(R.layout.full_item,null);
+        imageView = v.findViewById(R.id.img);
 
         /*if this is a video file set a play button on top of its thumbnail, and a listener
         for this button as well*/
@@ -80,10 +82,11 @@ public class FullSizeAdapter extends PagerAdapter {
             playArrow = v.findViewById(R.id.video_play_arrow);
             playArrow.setVisibility(View.VISIBLE);
             playVideo(files.get(position).getPath());
+            //disable zoom functionality for video thumbnails
+            imageView.setZoomEnabled(false);
         }
 
         //display image/video in full screen
-        imageView = v.findViewById(R.id.img);
         Glide.with(context)
                 .load(files.get(position).getPath())
                 .apply(new RequestOptions().centerInside())
@@ -104,6 +107,29 @@ public class FullSizeAdapter extends PagerAdapter {
 
         //Convert from ViewGroup to Viewpager the containing View in which the page will be shown
         ViewPager vp = (ViewPager) container;
+
+        //a listener that will be invoked whenever the page changes
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            /*reset zoom of image to original size on page change
+            (when the user slides a zoomed image, the image rollbacks to its original size)*/
+            @Override
+            public void onPageSelected(int position) {
+                TouchImageView image1 = v.findViewById(R.id.img);;
+                if (image1 != null) {
+                    image1.resetZoom();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         //add the View to the container
         vp.addView(v,0);
         return v;
@@ -113,7 +139,6 @@ public class FullSizeAdapter extends PagerAdapter {
     // Called when ViewPager no longer needs a page to display.
     // The adapter is responsible to remove the page from the container, which is usually the ViewPager itself.
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        //super.destroyItem(container, position, object);
 
         ViewPager viewPager = (ViewPager)container;
         View v = (View)object;
