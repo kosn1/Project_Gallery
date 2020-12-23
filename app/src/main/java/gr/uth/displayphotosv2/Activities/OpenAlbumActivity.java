@@ -46,7 +46,7 @@ public class OpenAlbumActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
 
-        //onClick photo listener
+        //onClick file listener
         final MediaListener listener = new MediaListener() {
             @Override
             public void onClick(View view, int position) {

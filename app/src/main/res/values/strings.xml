@@ -17,4 +17,9 @@
     <string name="location_dialog_title">Search for location</string>
     <string name="close_button">close button</string>
     <string name="location_textview">at</string>
+    <string name="search_hint">Search your files</string>
+    <string name="searchNoResultsText">Search by tag and/or location</string>
+    <string name="tab1">All</string>
+    <string name="tab2">Images</string>
+    <string name="tab3">Videos</string>
 </resources>

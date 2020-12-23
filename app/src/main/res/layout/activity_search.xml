@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.SearchActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <!--<androidx.appcompat.widget.Toolbar
+            android:id="@+id/search_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+
+                <EditText
+                    android:id="@+id/search_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="90"
+                    android:hint="@string/search_hint"
+                    android:inputType="text"
+                    android:maxLines="1" />
+
+
+                <ImageView
+                    android:id="@+id/search_bar_hint_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="10"
+                    android:src="@android:drawable/ic_menu_search" />
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>-->
+
+        <LinearLayout
+            android:id="@+id/search_linear_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:padding="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_text"
+                android:hint="@string/search_hint"
+                android:layout_gravity="center"
+                android:drawableStart="@drawable/ic_baseline_search_24"
+                android:drawablePadding="13dp"
+                android:paddingStart="20dp"
+                android:paddingVertical="15dp"
+                android:background="@drawable/searchview_background"/>
+        </LinearLayout>
+
+
+
+        <ImageView
+            android:id="@+id/image_magn_glass"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/search_linear_layout"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/baseline_image_search_24" />
+
+        <TextView
+            android:id="@+id/search_no_results_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_magn_glass"
+            android:text="@string/searchNoResultsText"
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:textSize="20sp" />
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tabLayout"
+            android:layout_below="@id/files_number"
+            app:tabSelectedTextColor="#000000"
+            app:tabIndicatorHeight="0dp"
+            app:tabTextColor="#BFBABA"
+            android:visibility="gone">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab1"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab2"/>
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab3"/>
+        </com.google.android.material.tabs.TabLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/files_number"
+            android:layout_centerVertical="true"
+            android:textSize="18sp"
+            android:layout_below="@id/search_linear_layout"
+            android:layout_margin="16dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tabLayout"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+</ScrollView>

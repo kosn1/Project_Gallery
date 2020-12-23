@@ -37,6 +37,22 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         this.clickListener = clickListener;
     }
 
+    public ArrayList<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(ArrayList<File> files) {
+        this.files = files;
+    }
+
+    public MediaListener getClickListener() {
+        return clickListener;
+    }
+
+    public void setClickListener(MediaListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
     @NonNull
     @Override
     public GalleryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,6 +82,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                         //make play button visible if this is a video file
                         if(fileType == Type.VIDEO){
                             playArrow.setVisibility(View.VISIBLE);
+                        }
+                        //remove play button if file is an image
+                        if(fileType == Type.IMAGE && playArrow.getVisibility()==View.VISIBLE){
+                            playArrow.setVisibility(View.GONE);
                         }
 
                         return false;

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import gr.uth.displayphotosv2.Activities.AlbumActivity;
+import gr.uth.displayphotosv2.Activities.SearchActivity;
 import gr.uth.displayphotosv2.HomeButton;
 import gr.uth.displayphotosv2.Activities.PhotosActivity;
 import gr.uth.displayphotosv2.R;
@@ -56,15 +57,27 @@ public class HomeScreenViewAdapter extends RecyclerView.Adapter<HomeScreenViewAd
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.textViewButtonName.getText().toString().equals("Photos")){
-                    Intent intent = new Intent(context, PhotosActivity.class);
-                    context.startActivity(intent);
-                }else if(holder.textViewButtonName.getText().toString().equals("Videos")){
-                    Intent intent = new Intent(context, VideoActivity.class);
-                    context.startActivity(intent);
-                }else if(holder.textViewButtonName.getText().toString().equals("Albums")){
-                    Intent intent = new Intent(context, AlbumActivity.class);
-                    context.startActivity(intent);
+                switch (holder.textViewButtonName.getText().toString()) {
+                    case "Photos": {
+                        Intent intent = new Intent(context, PhotosActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    }
+                    case "Videos": {
+                        Intent intent = new Intent(context, VideoActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    }
+                    case "Albums": {
+                        Intent intent = new Intent(context, AlbumActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    }
+                    case "Search": {
+                        Intent intent = new Intent(context, SearchActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    }
                 }
             }
         });

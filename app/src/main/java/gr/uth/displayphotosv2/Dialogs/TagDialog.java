@@ -204,7 +204,7 @@ public class TagDialog extends AlertDialog {
                 for(Integer i: unselectedTagsIDs){
 
                     if(databaseHelper.checkTag(i,databaseHelper.getFileID(filepath))){
-                        databaseHelper.deleteTagFromFile(String.valueOf(i));
+                        databaseHelper.deleteTagFromFile(String.valueOf(i),String.valueOf(databaseHelper.getFileID(filepath)));
                     }
                 }
 

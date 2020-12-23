@@ -116,6 +116,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("select * from "+TAG_TABLE,null );
     }
 
+    //get tagName by tagID
+    public String getTagName(Integer tagID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select "+TAG_NAME+" from "+TAG_TABLE+" where "+TAG_ID+" = "+tagID,null);
+        String tagName = "";
+        if (result.moveToFirst()) {
+            tagName=result.getString(0);
+        }
+        result.close();
+        return tagName;
+    }
+
     // returns all tags(IDs and names) of a file
     public Cursor getTagsOfFile(Integer fileID){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -123,6 +135,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " INNER JOIN "+TAG_OF_FILE_TABLE+
                 " ON " +TAG_TABLE+"."+TAG_ID+"="+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_TAG_ID+
                 " WHERE "+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_FILE_ID+" = "+fileID,null);
+    }
+
+    // returns all files which have this tag
+    public Cursor getFilesFromTag(Integer tagID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select * from "+FILE_TABLE+
+                " INNER JOIN "+TAG_OF_FILE_TABLE+
+                " ON " +FILE_TABLE+"."+FILE_ID+"="+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_FILE_ID+
+                " WHERE "+TAG_OF_FILE_TABLE+"."+TAG_OF_FILE_TAG_ID+" = "+tagID,null);
     }
 
     //insert new File
@@ -134,6 +155,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(FILE_TABLE,null,contentValues);
         db.close();
         return result != -1;
+    }
+
+    //returns all the tags from TAG_OF_FILE table
+    public Cursor getTagsOfFiles() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select DISTINCT "+TAG_OF_FILE_TAG_ID+" from "+TAG_OF_FILE_TABLE,null);
     }
 
     //add date to file
@@ -167,6 +194,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("select " + FILE_LOCATION + " from "+FILE_TABLE+
                 " where "+FILE_ID+" = "+id,null);
+    }
+
+    // returns all files which have this location
+    public Cursor getFilesFromLocation(String location){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select "+FILE_PATH+","+FILE_TYPE+
+                " from "+FILE_TABLE+
+                " WHERE "+FILE_LOCATION+" = "+"'"+location+"'",null);
+    }
+
+    //Get all (non-null) values from location column
+    public Cursor getLocations(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select DISTINCT " + FILE_LOCATION + " from "+FILE_TABLE+
+                " where "+FILE_LOCATION+" IS NOT NULL ",null);
     }
 
     //Remove location from file
@@ -205,9 +247,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Remove tag from file
-    public Integer deleteTagFromFile(String ID){
+    public Integer deleteTagFromFile(String tagID,String fileID){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TAG_OF_FILE_TABLE,TAG_OF_FILE_TAG_ID + "=?",new String[] {ID});
+        return db.delete(TAG_OF_FILE_TABLE, TAG_OF_FILE_TAG_ID + "=?"+
+                        " AND "+TAG_OF_FILE_FILE_ID+"=?",new String[] {tagID,fileID});
     }
 
     public Integer getTagId(String tag) {
