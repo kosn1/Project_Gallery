@@ -69,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //CREATE TAG_OF_FILE TABLE
         db.execSQL("CREATE TABLE " + TAG_OF_FILE_TABLE +" ("+ TAG_OF_FILE_TAG_ID +" INTEGER, "+
                 TAG_OF_FILE_FILE_ID +" INTEGER, FOREIGN KEY ( "+TAG_OF_FILE_TAG_ID+") REFERENCES "+TAG_TABLE+"( "+TAG_ID+"), "+
-                "FOREIGN KEY ( "+TAG_OF_FILE_FILE_ID+") REFERENCES "+FILE_TABLE+"( "+FILE_ID+"))");
+                "FOREIGN KEY ( "+TAG_OF_FILE_FILE_ID+") REFERENCES "+FILE_TABLE+"( "+FILE_ID+" ) ON DELETE CASCADE)");
 
         //DEFAULT TAGS
         insertSampleTag(db,"Animals");
@@ -93,6 +93,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /*Turns on support for foreign keys every every time the database is opened,
+    which is necessary for "ON DELETE CASCADE" to work properly. */
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.execSQL("PRAGMA foreign_keys=ON");
+    }
 
     public void insertSampleTag(SQLiteDatabase db, String tagName) {
         ContentValues contentValues = new ContentValues();
@@ -155,6 +162,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(FILE_TABLE,null,contentValues);
         db.close();
         return result != -1;
+    }
+
+    //delete File from database by file_id
+    public void deleteFile(String ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(FILE_TABLE, "file_id=?", new String[]{ID});
+    }
+
+    //get all Files from database
+    public Cursor getAllFiles(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from "+FILE_TABLE,null );
     }
 
     //returns all the tags from TAG_OF_FILE table

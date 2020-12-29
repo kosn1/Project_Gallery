@@ -97,7 +97,6 @@ public class SearchActivity extends AppCompatActivity {
             while (cursorTag.moveToNext()) {
                 tags.add(databaseHelper.getTagName(cursorTag.getInt(0)));
             }
-            System.out.println(tags.size());
 
             Cursor cursorLocation = databaseHelper.getLocations();
             ArrayList<String> locations = new ArrayList<>();
