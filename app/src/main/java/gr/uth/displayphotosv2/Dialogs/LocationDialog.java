@@ -91,6 +91,7 @@ public class LocationDialog extends AlertDialog {
         while (result.moveToNext()){
             currentLocation = result.getString(0);
         }
+        result.close();
 
         if(currentLocation!=null){
             locationTextView.append(" "+currentLocation);

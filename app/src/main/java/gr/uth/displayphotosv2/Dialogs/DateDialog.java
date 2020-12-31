@@ -49,6 +49,7 @@ public class DateDialog {
         while (result.moveToNext()){
             currentDate = result.getString(0);
         }
+        result.close();
 
         /*Define and display the date dialog window.
          If the selected photo/video has a date already stored,

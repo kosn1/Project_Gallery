@@ -57,5 +57,6 @@ public class LauncherActivity extends AppCompatActivity {
                 databaseHelper.deleteFile(String.valueOf(result.getInt(0)));
             }
         }
+        result.close();
     }
 }

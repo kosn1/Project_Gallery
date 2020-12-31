@@ -85,6 +85,7 @@ public class TagDialog extends AlertDialog {
         while (result.moveToNext()){
             currentTagsList.add(result.getString(1));
         }
+        result.close();
 
         /*if the selected photo/video has any tags, display them as chips in currentTagsChipGroup
         and set them checked*/

@@ -97,12 +97,14 @@ public class SearchActivity extends AppCompatActivity {
             while (cursorTag.moveToNext()) {
                 tags.add(databaseHelper.getTagName(cursorTag.getInt(0)));
             }
+            cursorTag.close();
 
             Cursor cursorLocation = databaseHelper.getLocations();
             ArrayList<String> locations = new ArrayList<>();
             while (cursorLocation.moveToNext()){
                 locations.add(cursorLocation.getString(0));
             }
+            cursorLocation.close();
 
             //a list which will store the results of the search
             ArrayList<File> fileListResults = new ArrayList<>();
@@ -137,6 +139,7 @@ public class SearchActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                        cursor.close();
                     }
                 }
             }
@@ -167,6 +170,7 @@ public class SearchActivity extends AppCompatActivity {
                                 }
                             }
                         }
+                        cursor.close();
                     }
                 }
             }

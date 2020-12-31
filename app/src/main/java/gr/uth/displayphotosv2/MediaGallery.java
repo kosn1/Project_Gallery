@@ -48,7 +48,7 @@ public class MediaGallery {
             File file = new File(cursor.getString(column_index_data),Type.IMAGE);
             listOfAllImages.add(file);
         }
-
+        cursor.close();
         return listOfAllImages;
 
     }
@@ -97,7 +97,7 @@ public class MediaGallery {
             File file = new File(cursor.getString(column_index_data),Type.VIDEO);
             listOfAllVideos.add(file);
         }
-
+        cursor.close();
         return listOfAllVideos;
 
     }
@@ -195,6 +195,8 @@ public class MediaGallery {
 
 
         }
+        imageCursor.close();
+        videoCursor.close();
 
         return albumHashMap;
     }
@@ -255,6 +257,8 @@ public class MediaGallery {
             }
         }
 
+        imageCursor.close();
+        videoCursor.close();
 
         return albumSizeHashMap;
 
@@ -308,6 +312,8 @@ public class MediaGallery {
             }
         }
 
+        imageCursor.close();
+        videoCursor.close();
         return files;
     }
 

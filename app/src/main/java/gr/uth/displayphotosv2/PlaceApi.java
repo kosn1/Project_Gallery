@@ -38,6 +38,7 @@ public class PlaceApi {
                 jsonResult.append(buff,0,read);
 
             }
+            inputStreamReader.close();
         }
         catch (MalformedURLException e){
             e.printStackTrace();
