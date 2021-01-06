@@ -110,11 +110,13 @@ public class MediaGallery {
         String[] projection = new String[] {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media.DATE_ADDED,
                 MediaStore.Video.Media.DATE_TAKEN,
+                MediaStore.Video.Media.DATE_ADDED,
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME};
 
-        String orderByImg = MediaStore.Images.Media.DATE_TAKEN;
-        String orderByVid = MediaStore.Video.Media.DATE_TAKEN;
+        String orderByImg = MediaStore.Images.Media.DATE_ADDED;
+        String orderByVid = MediaStore.Video.Media.DATE_ADDED;
 
         //fetch the data, we need separate cursors for images and videos
         Cursor imageCursor = context.getContentResolver().
@@ -154,7 +156,7 @@ public class MediaGallery {
                         imageCursor.getString(imagePathColumn));
 
                 namesAndDates.put(imageCursor.getString((imageCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME))) + "\n",
-                        imageCursor.getString((imageCursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_TAKEN))));
+                        imageCursor.getString((imageCursor.getColumnIndex(MediaStore.Images.ImageColumns.DATE_ADDED))));
             }
 
         }
@@ -170,8 +172,12 @@ public class MediaGallery {
         as a key and video's thumbnail as value to albumHashMap*/
         while (videoCursor.moveToNext()) {
 
+            try{
+                videoDate = Long.parseLong(videoCursor.getString(videoCursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
-            videoDate = Long.parseLong(videoCursor.getString(imageCursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN)));
 
             if(albumHashMap.containsKey(videoCursor.
                     getString((videoCursor.getColumnIndex(MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME))) + "\n")) {
