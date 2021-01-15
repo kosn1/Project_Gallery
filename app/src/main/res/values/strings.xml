@@ -22,4 +22,10 @@
     <string name="tab1">All</string>
     <string name="tab2">Images</string>
     <string name="tab3">Videos</string>
+    <string name="date_range">Date Range</string>
+    <string name="edit">Edit</string>
+    <string name="set_date_range">Set Date Range</string>
+    <string name="from">From: %1$s</string>
+    <string name="to">To: %1$s</string>
+    <string name="Done">Done</string>
 </resources>

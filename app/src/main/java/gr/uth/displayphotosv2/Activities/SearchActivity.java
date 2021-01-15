@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.Adapters.GalleryAdapter;
 import gr.uth.displayphotosv2.DatabaseHelper;
+import gr.uth.displayphotosv2.Dialogs.DateRangeDialog;
 import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
@@ -332,5 +335,14 @@ public class SearchActivity extends AppCompatActivity {
         searchList.setVisibility(View.GONE);
         numberOfFiles.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
+    }
+
+    //edit date range on click listener. Opens the date range dialog window
+    public void editDateRange(View view) {
+
+        LayoutInflater inflater=(LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        DateRangeDialog dateRangeDialog = new DateRangeDialog(this,inflater);
+        dateRangeDialog.displayDateRangeDialog();
     }
 }

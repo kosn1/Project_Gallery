@@ -51,7 +51,7 @@ public class LocationDialog extends AlertDialog {
     }
 
     public void displayLocationDialog(String filepath){
-        //display tag dialog window
+        //display location dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AppTheme);
         final View dialogView = inflater.inflate(R.layout.location_dialog, null);
         alert = builder.setView(dialogView)

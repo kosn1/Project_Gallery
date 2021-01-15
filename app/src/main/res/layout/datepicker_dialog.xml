@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_daterange"
+        android:padding="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/set_date_range"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/doneBtn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/Done"
+                android:background="@android:color/transparent"
+                android:textColor="#0BA2F6"
+                android:textSize="17sp"
+                android:focusable="false"
+                android:textAllCaps="false"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+    <!--<androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linear_daterange"
+        android:id="@+id/constraint2_daterange">
+
+        <TextView
+            android:id="@+id/textViewDate1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="23 Mar 1924"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textViewto"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13 Jun 1985"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/textViewto"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewto"
+            android:text="TO"
+            android:textSize="20sp"
+            android:background="@drawable/txtview_border"
+            android:paddingVertical="3dp"
+            android:paddingHorizontal="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/textViewDate1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:childDivider="#E3E0E6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/linear_daterange"
+        android:focusable="false"
+
+        />
+
+</RelativeLayout>
