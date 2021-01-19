@@ -201,6 +201,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // returns the files whose date value is between the selected date range
+    public Cursor getFilesByDateRange(Date fromDate, Date toDate){
+        SQLiteDatabase db = this.getReadableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fd = dateFormat.format(fromDate);
+        String td = dateFormat.format(toDate);
+        return db.rawQuery("select * from " + FILE_TABLE +
+                " where "+FILE_DATE+" BETWEEN "+"'"+fd+"'"+" AND '"+td+"'",null);
+    }
+
     //Get date by fileID
     public Cursor getDateOfFile(Integer id){
         SQLiteDatabase db = this.getReadableDatabase();

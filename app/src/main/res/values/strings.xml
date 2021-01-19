@@ -28,4 +28,6 @@
     <string name="from">From: %1$s</string>
     <string name="to">To: %1$s</string>
     <string name="Done">Done</string>
+    <string name="date_range_placeholder">%1$s To %2$s</string>
+    <string name="Reset">Reset</string>
 </resources>

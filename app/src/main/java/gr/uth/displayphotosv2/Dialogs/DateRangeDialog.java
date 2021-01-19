@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -29,6 +30,8 @@ public class DateRangeDialog extends AlertDialog {
     private Context context;
     private LayoutInflater inflater;
     private AlertDialog alert;
+    private Date fromDate;
+    private Date toDate;
 
     private Button doneBtn;
 
@@ -37,13 +40,31 @@ public class DateRangeDialog extends AlertDialog {
     final String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
             "Sep", "Oct", "Nov", "Dec"};
 
-    public DateRangeDialog(Context context, LayoutInflater inflater) {
+    public DateRangeDialog(Context context, LayoutInflater inflater, Date fromDate, Date toDate) {
         super(context);
         this.context = context;
         this.inflater = inflater;
     }
 
-    public void displayDateRangeDialog(){
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    /*creates and displays the dialog window to the screen. Returns the AlertDialog object
+      which holds the current dialog view*/
+    public AlertDialog displayDateRangeDialog(){
 
         //display date range dialog window
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AnimationThemeDialog);
@@ -93,10 +114,12 @@ public class DateRangeDialog extends AlertDialog {
             }
         });
 
+        return alert;
+
     }
 
 
-    /*Fetches the date range and checks if start date is prior to end date.
+    /*Fetches the date range and checks if start date is before end date.
       Closes the dialog window and applies the date range selection if everything is fine,
       else displays a Toast to the user. */
     public void setDateRange(final ExpandableListView expandableListView){
@@ -119,20 +142,21 @@ public class DateRangeDialog extends AlertDialog {
                     Date fromDateFormatted = format.parse(dateFromFinal);
                     Date toDateFormatted = format.parse(dateToFinal);
 
-                    System.out.println(dateFromFinal);
-                    System.out.println(dateToFinal);
-
                     //compare the two dates chronologically
                     if(fromDateFormatted.compareTo(toDateFormatted)<0){
-                        System.out.println("OKKK");
+                        setFromDate(fromDateFormatted);
+                        setToDate(toDateFormatted);
+                        //close the dialog window
+                        alert.cancel();
+                    }else {
+                        Toast.makeText(context,"Invalid date range. Start date must be before end date.", Toast.LENGTH_LONG).show();
                     }
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                //close the dialog window
-                alert.cancel();
+
             }
         });
     }
