@@ -162,9 +162,10 @@ public class LocationDialog extends AlertDialog {
     private Cursor populateAdapter(String query,ArrayList<String> SUGGESTIONS) {
         MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "location" });
         for (int i=0; i<SUGGESTIONS.size(); i++) {
-            if (SUGGESTIONS.get(i).toLowerCase().startsWith(query.toLowerCase())){
+            /*if (SUGGESTIONS.get(i).toLowerCase().startsWith(query.toLowerCase())){
                 c.addRow(new Object[] {i, SUGGESTIONS.get(i)});
-            }
+            }*/
+            c.addRow(new Object[] {i, SUGGESTIONS.get(i)});
         }
         return c;
     }

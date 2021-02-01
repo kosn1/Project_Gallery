@@ -47,10 +47,7 @@ public class HomeScreenViewAdapter extends RecyclerView.Adapter<HomeScreenViewAd
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         holder.textViewButtonName.setText(mData.get(position).getName());
 
-        //slow, laggy in old devices, skips frames DONT DO IT
-        //holder.imageViewButton.setImageResource(mData.get(position).getImage());
-
-        //SUPER FAST OPTIMAL WAY, recommended by android
+        //FAST OPTIMAL WAY, recommended by android
         Glide.with(context).load(mData.get(position).getImage()).into(holder.imageViewButton);
 
         //homescreen buttons listener

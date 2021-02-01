@@ -40,9 +40,8 @@ public class FullSizeAdapter extends PagerAdapter {
 
     DatabaseHelper databaseHelper;
 
-    /* The constructor of FullSizeAdapter requires 3 parameters:the current context of the app,
-    * a list with the absolute paths of the files that are being displayed and the type of the
-    * files(photo/video) */
+    /* The constructor of FullSizeAdapter requires 2 parameters:the current context of the app and
+    * a list with the absolute paths of the files that are being displayed */
     public FullSizeAdapter(Context context, ArrayList<File> files){
         this.context = context;
         this.files = files;

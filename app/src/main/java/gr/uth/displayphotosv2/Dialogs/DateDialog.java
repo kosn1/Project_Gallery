@@ -95,9 +95,6 @@ public class DateDialog {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month = month+1;
-                //String monthName = new DateFormatSymbols(Locale.US).getMonths()[month];
-                //String date = monthName +" "+dayOfMonth+", "+year;
-                //Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
                 try {
                     //convert the selected date in yyyy-MM-dd format
                     String date = year + "-" + month + "-" + dayOfMonth;
