@@ -33,7 +33,7 @@ import gr.uth.displayphotosv2.Type;
 
 /*An activity that provides a search box for the user to enter a search query.
   Displays a list of files suggestions based on the user's input. The search results,
-  are based on the tags and the locations of the files.*/
+  are based on the tags, the date and the locations of the files.*/
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -41,7 +41,7 @@ public class SearchActivity extends AppCompatActivity {
     private GalleryAdapter adapterSearchList;
 
     private ImageView searchNoResultsImage;
-    private TextView searchNoResultsText,numberOfFiles;
+    private TextView searchNoResultsText,numberOfFiles,searchNoMatchText;
     private TabLayout tabLayout;
 
     //flag for date range filter
@@ -71,6 +71,7 @@ public class SearchActivity extends AppCompatActivity {
         searchList = findViewById(R.id.search_list);
         searchNoResultsImage = findViewById(R.id.image_magn_glass);
         searchNoResultsText = findViewById(R.id.search_no_results_text);
+        searchNoMatchText = findViewById(R.id.search_no_match_text);
         numberOfFiles = findViewById(R.id.files_number);
         tabLayout = findViewById(R.id.tabLayout);
         dateRangePlaceholder = findViewById(R.id.daterange_txtview);
@@ -262,12 +263,13 @@ public class SearchActivity extends AppCompatActivity {
 
         //if search has no results display the appropriate layout
         if (adapterSearchList.getItemCount()==0) {
-            displayNoResultsLayout();
+            displayNoMatchLayout();
             return;
         }
 
         //change the layout to display the results
         searchNoResultsText.setVisibility(View.GONE);
+        searchNoMatchText.setVisibility(View.GONE);
         searchNoResultsImage.setVisibility(View.GONE);
 
         //set the GalleryAdapter to RecyclerView
@@ -381,6 +383,17 @@ public class SearchActivity extends AppCompatActivity {
         searchNoResultsText.setVisibility(View.VISIBLE);
         searchNoResultsImage.setVisibility(View.VISIBLE);
         searchList.setVisibility(View.GONE);
+        searchNoMatchText.setVisibility(View.GONE);
+        numberOfFiles.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+    }
+    
+    //Layout if search did not return any results
+    public void displayNoMatchLayout(){
+        searchNoMatchText.setVisibility(View.VISIBLE);
+        searchNoResultsImage.setVisibility(View.VISIBLE);
+        searchList.setVisibility(View.GONE);
+        searchNoResultsText.setVisibility(View.GONE);
         numberOfFiles.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
     }

@@ -18,15 +18,8 @@ public class File implements Serializable {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
 }

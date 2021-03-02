@@ -30,4 +30,5 @@
     <string name="Done">Done</string>
     <string name="date_range_placeholder">%1$s To %2$s</string>
     <string name="Reset">Reset</string>
+    <string name="searchNoMatchText">Your search did not match any files</string>
 </resources>
