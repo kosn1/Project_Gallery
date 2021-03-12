@@ -5,7 +5,10 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.SelectionManager;
 import gr.uth.displayphotosv2.Type;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>{
@@ -30,11 +34,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private Context context;
     private ArrayList<File> files;
     MediaListener clickListener;
+    private SelectionManager selectionManager;
 
-    public GalleryAdapter(Context context, ArrayList<File> files, MediaListener clickListener) {
+    public GalleryAdapter(Context context, ArrayList<File> files, MediaListener clickListener, SelectionManager selectionManager) {
         this.context = context;
         this.files = files;
         this.clickListener = clickListener;
+        this.selectionManager = selectionManager;
     }
 
     public ArrayList<File> getFiles() {
@@ -62,11 +68,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GalleryAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GalleryAdapter.ViewHolder holder, final int position) {
         final String filePath = files.get(position).getPath();
         final Type fileType = files.get(position).getType();
         final ProgressBar progressBar = holder.progressBar;
         final ImageView playArrow = holder.playArrow;
+        final File file = files.get(position);
         //display photos/GIFS/videos using Glide library
         Glide.with(context).load(filePath)
                 .listener(new RequestListener<Drawable>() {
@@ -93,6 +100,37 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 })
                 .into(holder.file);
 
+        //in some cases, it will prevent unwanted situations
+        holder.checkBox.setOnCheckedChangeListener(null);
+
+        //if true, checkbox will be selected, else unselected
+        holder.checkBox.setChecked(file.isSelected());
+
+        /*keep the position of the first checked item to prevent unexpected behavior
+         by notifyDataSetChanged() call.*/
+        if(selectionManager.position == position){
+            holder.checkBox.setChecked(true);
+            selectionManager.position = -1;
+        }
+
+        //check if action mode is on to show/hide the item's checkboxes
+        if (selectionManager.isActionMode){
+            holder.linearLayout.setVisibility(View.VISIBLE);
+        }else {
+            holder.linearLayout.setVisibility(View.GONE);
+            holder.checkBox.setChecked(false);
+        }
+
+
+        // Set a listener to be invoked when the checked state of this button changes.
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                file.setSelected(isChecked);
+                selectionManager.check(buttonView,position);
+            }
+        });
+
     }
 
     @Override
@@ -100,11 +138,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         return files.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
 
         ImageView file;
         ImageView playArrow;
         ProgressBar progressBar;
+        LinearLayout linearLayout;
+        CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,8 +153,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             file = itemView.findViewById(R.id.file_item);
             playArrow = itemView.findViewById(R.id.video_play);
             progressBar = itemView.findViewById(R.id.progBar);
-
+            linearLayout =  itemView.findViewById(R.id.linearCheckBox);
+            checkBox = itemView.findViewById(R.id.checkboxItem);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
 
@@ -123,5 +165,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             //pass the view and item's position in the recyclerview
             clickListener.onClick(v,getAdapterPosition());
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            clickListener.onItemLongClick(v,getAdapterPosition());
+            return true;
+        }
     }
+
 }

@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.OpenAlbumActivity"
     android:background="#333333"
     android:orientation="vertical">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        app:title=" ">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnBack"
+                android:background="@android:color/transparent"
+                android:src="@drawable/baseline_arrow_back_black_24dp"
+                android:layout_marginRight="16dp"
+                />
+
+            <TextView
+                android:id="@+id/text_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="selected Items"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/btnBack"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"

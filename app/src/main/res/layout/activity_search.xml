@@ -1,10 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activities.SearchActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#333333"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="gone"
+        app:title=" ">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnBack"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_arrow_back_24_white"
+                android:layout_marginRight="16dp"
+                />
+
+            <TextView
+                android:id="@+id/text_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="selected Items"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/btnBack"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </Toolbar>
 
     <RelativeLayout
 
@@ -193,4 +230,4 @@
             />
 
     </RelativeLayout>
-</ScrollView>
+</LinearLayout>

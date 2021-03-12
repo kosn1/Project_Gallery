@@ -1,10 +1,10 @@
 package gr.uth.displayphotosv2.Activities;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,8 +15,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -29,13 +31,14 @@ import gr.uth.displayphotosv2.Dialogs.DateRangeDialog;
 import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.SelectionManager;
 import gr.uth.displayphotosv2.Type;
 
 /*An activity that provides a search box for the user to enter a search query.
   Displays a list of files suggestions based on the user's input. The search results,
   are based on the tags, the date and the locations of the files.*/
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends Activity {
 
     private RecyclerView searchList;
     private GalleryAdapter adapterSearchList;
@@ -43,6 +46,9 @@ public class SearchActivity extends AppCompatActivity {
     private ImageView searchNoResultsImage;
     private TextView searchNoResultsText,numberOfFiles,searchNoMatchText;
     private TabLayout tabLayout;
+    private SelectionManager selectionManager;
+    private ImageButton backBtn;
+    LayoutInflater inflater;
 
     //flag for date range filter
     private boolean dateRangeOn = false;
@@ -76,6 +82,12 @@ public class SearchActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         dateRangePlaceholder = findViewById(R.id.daterange_txtview);
         reset = findViewById(R.id.resetBtn);
+        backBtn =findViewById(R.id.btnBack);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTextView = findViewById(R.id.text_toolbar);
+        setActionBar(toolbar);
+        inflater =  (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        selectionManager = new SelectionManager(this, toolbarTextView, toolbar, backBtn, inflater);
 
         /*separate lists in order to filter the results to 3 categories bases on the file type.
          all,image only(if any) and video only(if any)*/
@@ -108,7 +120,12 @@ public class SearchActivity extends AppCompatActivity {
 
         imageResultFiles.clear();
         videoResultFiles.clear();
-
+        //hide toolbar (if ActionMode is on)
+        try {
+            selectionManager.clearActionMode();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         //if the text from the search box is not empty
         if (!queryText.isEmpty()) {
 
@@ -256,10 +273,18 @@ public class SearchActivity extends AppCompatActivity {
                 //start new Activity
                 startActivity(intent);
             }
+
+            //on long click set the SelectionManager properly
+            @Override
+            public void onItemLongClick(View view, int position) {
+                selectionManager.setGalleryAdapter(adapterSearchList);
+                selectionManager.setFiles(fileListResults);
+                selectionManager.startSelection(position);
+            }
         };
 
         //create the adapter of RecyclerView
-        adapterSearchList = new GalleryAdapter(this, fileListResults, listener);
+        adapterSearchList = new GalleryAdapter(this, fileListResults, listener,selectionManager);
 
         //if search has no results display the appropriate layout
         if (adapterSearchList.getItemCount()==0) {
@@ -305,6 +330,12 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
+                //hide toolbar (if ActionMode is on) when tab selection changes
+                try {
+                    selectionManager.clearActionMode();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
                 //"All" tab
                 if(position==0){
@@ -319,6 +350,14 @@ public class SearchActivity extends AppCompatActivity {
                             intent.putExtra("position",position);
                             //start new Activity
                             startActivity(intent);
+                        }
+
+                        //on long click set the SelectionManager properly
+                        @Override
+                        public void onItemLongClick(View view, int position) {
+                            selectionManager.setGalleryAdapter(adapterSearchList);
+                            selectionManager.setFiles(allResultFiles);
+                            selectionManager.startSelection(position);
                         }
                     };
                     adapterSearchList.setClickListener(listener);
@@ -339,6 +378,14 @@ public class SearchActivity extends AppCompatActivity {
                             //start new Activity
                             startActivity(intent);
                         }
+
+                        //on long click set the SelectionManager properly
+                        @Override
+                        public void onItemLongClick(View view, int position) {
+                            selectionManager.setGalleryAdapter(adapterSearchList);
+                            selectionManager.setFiles(imageResultFiles);
+                            selectionManager.startSelection(position);
+                        }
                     };
                     adapterSearchList.setClickListener(listener);
                     adapterSearchList.notifyDataSetChanged();
@@ -357,6 +404,14 @@ public class SearchActivity extends AppCompatActivity {
                             intent.putExtra("position",position);
                             //start new Activity
                             startActivity(intent);
+                        }
+
+                        //on long click set the SelectionManager properly
+                        @Override
+                        public void onItemLongClick(View view, int position) {
+                            selectionManager.setGalleryAdapter(adapterSearchList);
+                            selectionManager.setFiles(videoResultFiles);
+                            selectionManager.startSelection(position);
                         }
                     };
                     adapterSearchList.setClickListener(listener);
@@ -386,6 +441,12 @@ public class SearchActivity extends AppCompatActivity {
         searchNoMatchText.setVisibility(View.GONE);
         numberOfFiles.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
+        //hide toolbar (if ActionMode is on)
+        try {
+            selectionManager.clearActionMode();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
     //Layout if search did not return any results
@@ -396,6 +457,12 @@ public class SearchActivity extends AppCompatActivity {
         searchNoResultsText.setVisibility(View.GONE);
         numberOfFiles.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
+        //hide toolbar (if ActionMode is on)
+        try {
+            selectionManager.clearActionMode();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     //edit date range on click listener. Opens the date range dialog window
@@ -436,7 +503,6 @@ public class SearchActivity extends AppCompatActivity {
                     Cursor results = databaseHelper.getFilesByDateRange(dateRangeDialog.getFromDate(),dateRangeDialog.getToDate());
                     fileListDateRangeResults.clear();
                     while (results.moveToNext()){
-                        System.out.println(results.getString(1));
                         File file = new File(results.getString(1), Type.valueOf(results.getString(2)));
                         fileListDateRangeResults.add(file);
                         checkFileType(file);

@@ -8,6 +8,7 @@ public class File implements Serializable {
 
     private String path;
     private Type type;
+    private boolean selected;
 
     public File(String path, Type type) {
         this.path = path;
@@ -22,4 +23,11 @@ public class File implements Serializable {
         return type;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }

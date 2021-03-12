@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,6 +19,7 @@ import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.DatabaseHelper;
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.R;
 
 public class TagDialog extends AlertDialog {
@@ -71,6 +73,38 @@ public class TagDialog extends AlertDialog {
 
         //Save Tags Button listener
         saveTags(filePath);
+
+        //cancel button Listener
+        cancelBtnOnClick();
+    }
+
+
+    //display tag dialog window (for multiple selected files)
+    public void displayTagDialog(ArrayList<File> selectedFiles) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = inflater.inflate(R.layout.tag_dialog, null);
+        alert = builder.setTitle(TITLE)
+                .setView(dialogView)
+                .show();
+
+        saveTagsBtn = dialogView.findViewById(R.id.addTagBtn);
+        cancelBtn = dialogView.findViewById(R.id.cancel_btn);
+        chipGroup = dialogView.findViewById(R.id.chip_grp);
+        tagInput = dialogView.findViewById(R.id.tagInput);
+        currentTagsTextView = dialogView.findViewById(R.id.current_tags_txtview);
+
+        //remove current tags textview while managing tags for multiple files
+        TextView currentTagsTitle = dialogView.findViewById(R.id.current_tags_title);
+        currentTagsTitle.setVisibility(View.GONE);
+        currentTagsTextView.setVisibility(View.GONE);
+
+
+        //load tags from database
+        loadTags();
+
+        //Save Tags Button listener
+        saveTags(selectedFiles);
 
         //cancel button Listener
         cancelBtnOnClick();
@@ -165,6 +199,21 @@ public class TagDialog extends AlertDialog {
         }
     }
 
+    public void loadTags(){
+        //retrieve all tags from database and display them
+        Cursor result = databaseHelper.getAllTags();
+        final ArrayList<String> tags = new ArrayList<>();
+        while (result.moveToNext()){
+            tags.add(result.getString(1));
+        }
+        result.close();
+        for(String text : tags) {
+            final Chip chip = (Chip) inflater.inflate(R.layout.chip, null, false);
+            chip.setText(text);
+            chipGroup.addView(chip);
+        }
+    }
+
     public void saveTags(final String filepath){
         //set saveTags Button functionality
         saveTagsBtn.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +277,69 @@ public class TagDialog extends AlertDialog {
                     }
                 }
 
+                //dismiss the dialog window
+                alert.cancel();
+            }
+        });
+    }
+
+    /*Set Save Tags Button functionality for multiple selected files.
+    * User can only add tags to multiple files simultaneously. Removing tags from files, is not supported
+    * while there are multiple files selected for editing.*/
+    public void saveTags(final ArrayList<File> selectedFiles){
+
+        saveTagsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //retrieve the selected tags
+                ArrayList<String> selectedTags = new ArrayList<>();
+
+                for(int i=0; i<chipGroup.getChildCount(); i++){
+                    Chip chip =(Chip) chipGroup.getChildAt(i);
+                    if(chip.isChecked()){
+                        selectedTags.add(chip.getText().toString());
+                    }
+                }
+
+                //retrieve the ID from selected tags
+                ArrayList<Integer> selectedTagsIDs = new ArrayList<>();
+
+                for(String s: selectedTags){
+                    selectedTagsIDs.add(databaseHelper.getTagId(s));
+                }
+
+                //add selected tags to the files
+                for(Integer i: selectedTagsIDs){
+                    for(File selectedFile: selectedFiles){
+                        if(!databaseHelper.checkTag(i,databaseHelper.getFileID(selectedFile.getPath()))){
+                            databaseHelper.addTagToFile(i,databaseHelper.getFileID(selectedFile.getPath()));
+                        }
+                    }
+
+                }
+
+                //store input tags
+                if(!tagInput.getText().toString().isEmpty()){
+                    String[] inputTags = tagInput.getText().toString().split(" ");
+
+                    /*For each tag given by the user, check if it is already added in the database and
+                    if not add it. Also check if the tag is already added in this file, so there are
+                    no duplicate/same tags in a file*/
+                    for(String str : inputTags){
+
+                        if(!databaseHelper.checkTagName(str)){
+                            databaseHelper.insertNewTag(str);
+                        }
+                        for(File selectedFile: selectedFiles){
+                            if(!databaseHelper.checkTag(databaseHelper.getTagId(str),databaseHelper.getFileID(selectedFile.getPath()))){
+                                databaseHelper.addTagToFile(databaseHelper.getTagId(str),databaseHelper.getFileID(selectedFile.getPath()));
+                            }
+                        }
+
+                    }
+                }
+                Toast.makeText(context, "Tags added to selected files", Toast.LENGTH_SHORT).show();
                 //dismiss the dialog window
                 alert.cancel();
             }

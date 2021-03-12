@@ -14,11 +14,13 @@ import androidx.annotation.NonNull;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import gr.uth.displayphotosv2.DatabaseHelper;
+import gr.uth.displayphotosv2.File;
 
 public class DateDialog {
 
@@ -39,6 +41,10 @@ public class DateDialog {
 
     }
 
+    /*Define and display the date dialog window.
+     If the selected photo/video has a date already stored,
+     set the date picker dialog window to the specified date,
+     otherwise set the date picker dialog window to current date*/
     public void displayDateDialog(final String filePath){
         //Set Date listener
         setDate(filePath);
@@ -51,10 +57,6 @@ public class DateDialog {
         }
         result.close();
 
-        /*Define and display the date dialog window.
-         If the selected photo/video has a date already stored,
-         set the date picker dialog window to the specified date,
-         otherwise set the date picker dialog window to current date*/
         if(currentDate!=null){
             String[] dateArray = currentDate.split("-");
             int currentYear = Integer.parseInt(dateArray[0]);
@@ -86,8 +88,30 @@ public class DateDialog {
         }
     }
 
+    /*display date dialog for multiple selected files. Always sets
+      the date picker dialog window to current date*/
+    public void displayDateDialog(ArrayList<File> selectedFiles){
+        //Set Date listener
+        setDate(selectedFiles);
 
-    //The listener used to indicate the user has finished selecting a date
+        //Create a calendar object to get the current day,month,year
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                context,
+                android.R.style.Theme_Holo_Light_Dialog,
+                dateSetListener,
+                year,month,day);
+        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        datePickerDialog.show();
+
+    }
+
+
+    //The listener used to indicate the user has finished selecting a date for a file
     public void setDate(final String filePath){
         /*MUST BE DECLARED BEFORE CREATING A NEW DatePickerDialog OBJECT,
         OTHERWISE IT WILL NEVER GET TRIGGERED!!*/
@@ -102,6 +126,33 @@ public class DateDialog {
                     Date finalDate = format.parse(date);
                     //add date to File
                     databaseHelper.insertDateToFile(databaseHelper.getFileID(filePath),finalDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed to add date", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
+    }
+
+    //The listener used to indicate the user has finished selecting a date for multiple files
+    public void setDate(final ArrayList<File> selectedFiles){
+        /*MUST BE DECLARED BEFORE CREATING A NEW DatePickerDialog OBJECT,
+        OTHERWISE IT WILL NEVER GET TRIGGERED!!*/
+        dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                try {
+                    //convert the selected date in yyyy-MM-dd format
+                    String date = year + "-" + month + "-" + dayOfMonth;
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    Date finalDate = format.parse(date);
+                    //add date to Files
+                    for(File selectedFile: selectedFiles){
+                        databaseHelper.insertDateToFile(databaseHelper.getFileID(selectedFile.getPath()),finalDate);
+                    }
+                    Toast.makeText(context, "Dates added to selected files", Toast.LENGTH_SHORT).show();
                 } catch (ParseException e) {
                     e.printStackTrace();
                     Toast.makeText(context, "Failed to add date", Toast.LENGTH_SHORT).show();

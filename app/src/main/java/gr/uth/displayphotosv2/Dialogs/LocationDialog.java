@@ -5,15 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.provider.BaseColumns;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CursorAdapter;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -22,6 +21,7 @@ import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import java.util.ArrayList;
 
 import gr.uth.displayphotosv2.DatabaseHelper;
+import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.PlaceApi;
 import gr.uth.displayphotosv2.R;
 
@@ -77,6 +77,34 @@ public class LocationDialog extends AlertDialog {
 
         //remove location button listener
         deleteLocation(filepath);
+
+        //close button Listener
+        closeDialogBtn = dialogView.findViewById(R.id.close_location_dialog);
+        closeBtnOnClick();
+
+    }
+
+    /*display location dialog window for multiple selected files. It does not include the current
+    * location of the files, as there are more than one.*/
+    public void displayLocationDialog(ArrayList<File> selectedFiles){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AppTheme);
+        final View dialogView = inflater.inflate(R.layout.location_dialog, null);
+        alert = builder.setView(dialogView)
+                .show();
+
+        /*Allow the window to be resized when keyboard is shown,
+          so that its contents are not covered by the keyboard*/
+        alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        //create an adapter for displaying location suggestions and set it to searchview widget
+        mAdapter = createSuggestionsAdapter();
+        searchView=dialogView.findViewById(R.id.searchview);
+        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setIconifiedByDefault(false);
+
+        //select suggestion Listener
+        selectSuggestion(selectedFiles);
 
         //close button Listener
         closeDialogBtn = dialogView.findViewById(R.id.close_location_dialog);
@@ -147,6 +175,38 @@ public class LocationDialog extends AlertDialog {
 
                 //add location to photo/video and close the dialog window
                 databaseHelper.addLocationToFile(databaseHelper.getFileID(filePath),loc);
+                alert.cancel();
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+        });
+    }
+
+    /* Getting selected (clicked) item suggestion
+    (for adding location to multiple selected files simultaneously)*/
+    public void selectSuggestion(final ArrayList<File> selectedFiles){
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                //get the selected location
+                Cursor cursor = (Cursor) mAdapter.getItem(position);
+                String loc = cursor.getString(cursor.getColumnIndex("location"));
+                searchView.setQuery(loc, true);
+
+                try {
+                    //add location to files and close the dialog window
+                    for(File selectedFile:selectedFiles){
+                        databaseHelper.addLocationToFile(databaseHelper.getFileID(selectedFile.getPath()),loc);
+                    }
+                    Toast.makeText(context, "Location added to selected files", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(context, "Failed to add location", Toast.LENGTH_SHORT).show();
+                }
                 alert.cancel();
                 return true;
             }

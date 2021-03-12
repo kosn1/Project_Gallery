@@ -1,19 +1,23 @@
 package gr.uth.displayphotosv2.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -22,13 +26,17 @@ import gr.uth.displayphotosv2.File;
 import gr.uth.displayphotosv2.MediaGallery;
 import gr.uth.displayphotosv2.Interfaces.MediaListener;
 import gr.uth.displayphotosv2.R;
+import gr.uth.displayphotosv2.SelectionManager;
 
-public class VideoActivity extends AppCompatActivity {
+public class VideoActivity extends Activity {
 
     private RecyclerView recyclerView;
     private GalleryAdapter galleryAdapter;
     private ArrayList<File> videos;
     private TextView numberOfVideos;
+    private SelectionManager selectionManager;
+    private ImageButton backBtn;
+    LayoutInflater inflater;
 
     private static final int READ_PERMISSION_CODE =101;
 
@@ -39,6 +47,12 @@ public class VideoActivity extends AppCompatActivity {
 
         numberOfVideos = findViewById(R.id.videos_number);
         recyclerView = findViewById(R.id.recyclerview_gallery_videos);
+        backBtn =findViewById(R.id.btnBack);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTextView = findViewById(R.id.text_toolbar);
+        setActionBar(toolbar);
+        inflater =  (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        selectionManager = new SelectionManager(this, toolbarTextView, toolbar, backBtn, inflater);
 
         //check permission
         //if permission not granted ask for permission about internal storage, else load the videos
@@ -72,9 +86,17 @@ public class VideoActivity extends AppCompatActivity {
                 //start new Activity
                 startActivity(intent);
             }
+
+            //on long click set the SelectionManager properly
+            @Override
+            public void onItemLongClick(View view, int position) {
+                selectionManager.setGalleryAdapter(galleryAdapter);
+                selectionManager.setFiles(videos);
+                selectionManager.startSelection(position);
+            }
         };
 
-        galleryAdapter = new GalleryAdapter(this, videos, listener);
+        galleryAdapter = new GalleryAdapter(this, videos, listener,selectionManager);
 
         //set the GalleryAdapter to RecyclerView
         recyclerView.setAdapter(galleryAdapter);
