@@ -32,7 +32,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG_OF_FILE_TAG_ID ="tag_id";
     private static final String TAG_OF_FILE_FILE_ID ="file_id";
 
-
+    /*
+     * Constructor should be private to prevent direct instantiation.
+     * make call to static factory method "getInstance()" instead.
+     */
     private DatabaseHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, 1);
     }
@@ -90,6 +93,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TAG_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + FILE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TAG_OF_FILE_TABLE);
         onCreate(db);
     }
 
@@ -228,6 +233,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // returns all files which have this location
     public Cursor getFilesFromLocation(String location){
         SQLiteDatabase db = this.getReadableDatabase();
+        /* replace possible single quotes characters with double quotes,
+        in order to prevent SQL syntax errors in queries */
+        location = location.replace("'", "''");
         return db.rawQuery("select "+FILE_PATH+","+FILE_TYPE+
                 " from "+FILE_TABLE+
                 " WHERE "+FILE_LOCATION+" = "+"'"+location+"'",null);
@@ -284,6 +292,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Integer getTagId(String tag) {
         Integer id=0;
+        /* replace possible single quotes characters with double quotes,
+        in order to prevent SQL syntax errors in queries */
+        tag = tag.replace("'", "''");
         // Select Query which is case insensitive for searching strings
         String selectQuery = "SELECT "+TAG_ID+" FROM " + TAG_TABLE+" WHERE LOWER("+TAG_NAME+") = LOWER('"+tag+"')";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -305,6 +316,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Integer getFileID(String filePath) {
         Integer id=0;
+        /* replace possible single quotes characters with double quotes,
+        in order to prevent SQL syntax errors in queries */
+        filePath = filePath.replace("'", "''");
         // Select Query
         String selectQuery = "SELECT  "+FILE_ID+" FROM " + FILE_TABLE+" WHERE "+FILE_PATH+" = '"+filePath+"'";
         SQLiteDatabase db = this.getReadableDatabase();

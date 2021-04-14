@@ -35,6 +35,7 @@ public class SelectionManager {
     private GalleryAdapter galleryAdapter;
     LayoutInflater inflater;
     Context context;
+    DatabaseHelper databaseHelper;
 
     private ArrayList<File> files;
 
@@ -74,6 +75,18 @@ public class SelectionManager {
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+
+                    /*Initializing a helper object using DatabaseHelper.getInstance(context),
+                    guarantees that only one database helper will exist
+                    across the entire application's lifecycle*/
+                    databaseHelper = DatabaseHelper.getInstance(context);
+
+                    //add file to database if not exists already
+                    for(File file:selectedFiles){
+                        if(!databaseHelper.checkIfPathExistsAlready(file.getPath())){
+                            databaseHelper.insertNewFile(file.getPath(), file.getType().toString());
+                        }
+                    }
 
                     if(item.getItemId()==R.id.tag && selectedFiles.size()>0){
                         if(selectedFiles.size()==1){

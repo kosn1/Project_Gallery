@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import androidx.loader.content.CursorLoader;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,9 +26,9 @@ public class MediaGallery {
         //build the query
         String [] projection = {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_TAKEN};
+                MediaStore.Images.Media.DATE_ADDED};
 
-        String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+        String orderBy = MediaStore.Images.Media.DATE_ADDED;
 
         //fetch the data
         cursor = context.getContentResolver().query(uri, projection, //which columns to return
@@ -36,7 +38,7 @@ public class MediaGallery {
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
 
         //date to milliseconds
-        //int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+        //int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
 
         //get folder name of image
         //column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
@@ -44,7 +46,7 @@ public class MediaGallery {
         //add the absolute path of each image to the list
         while (cursor.moveToNext()){
             //absolutePathOfImage = cursor.getString(column_index_data);
-            //System.out.println(cursor.getString(dateColumn));
+            //System.out.println(absolutePathOfImage+" "+cursor.getString(dateColumn));
             File file = new File(cursor.getString(column_index_data),Type.IMAGE);
             listOfAllImages.add(file);
         }
@@ -68,10 +70,10 @@ public class MediaGallery {
                 MediaStore.Video.Media.DISPLAY_NAME,
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Video.Media.BUCKET_ID,
-                MediaStore.Video.Media.DATE_TAKEN};
+                MediaStore.Video.Media.DATE_ADDED};
 
 
-        String orderBy = MediaStore.Video.Media.DATE_TAKEN;
+        String orderBy = MediaStore.Video.Media.DATE_ADDED;
 
         //fetch the data
         cursor = context.getContentResolver().query(uri, projection, //which columns to return
@@ -84,7 +86,7 @@ public class MediaGallery {
         //int bucketColumn = cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME);
 
         //date to milliseconds
-        //int dateColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);
+        //int dateColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATE_ADDED);
 
         //get folder name of video
         //column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
@@ -111,7 +113,6 @@ public class MediaGallery {
                 MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_TAKEN,
                 MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Video.Media.DATE_TAKEN,
                 MediaStore.Video.Media.DATE_ADDED,
                 MediaStore.Video.Media.BUCKET_DISPLAY_NAME};
 
@@ -275,51 +276,54 @@ public class MediaGallery {
     public static ArrayList<File> getAlbumItems(Context context, String albumName){
 
         //build the query
-        String[] projection = new String[] {MediaStore.MediaColumns.DATA,
-                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_TAKEN,
-                MediaStore.Video.Media.DATE_TAKEN,
-                MediaStore.Video.Media.BUCKET_DISPLAY_NAME};
+        String[] projection = new String[] {MediaStore.Files.FileColumns._ID,
+                MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.DATE_ADDED,
+                MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Files.FileColumns.MEDIA_TYPE,
+                MediaStore.Files.FileColumns.MIME_TYPE,
+                MediaStore.Files.FileColumns.TITLE};
 
-        String orderByImg = MediaStore.Images.Media.DATE_TAKEN;
-        String orderByVid = MediaStore.Video.Media.DATE_TAKEN;
+        // Return only video and image metadata.
+        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " OR "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-        //fetch the data, we need separate cursors for images and videos
-        Cursor imageCursor = context.getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                        null,
-                        null,
-                        orderByImg + " DESC");
+        Uri queryUri = MediaStore.Files.getContentUri("external");
 
-        Cursor videoCursor = context.getContentResolver().
-                query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection,
-                        null,
-                        null,
-                        orderByVid + " DESC");
-
-        int imagePathColumn = imageCursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        int videoPathColumn = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        //fetch the data
+        CursorLoader cursorLoader = new CursorLoader(
+                context,
+                queryUri,
+                projection,
+                selection,
+                null,
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC" // Sort order.
+        );
+        Cursor cursor = cursorLoader.loadInBackground();
+        int filePathColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
+        int fileTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);
 
         ArrayList<File> files = new ArrayList<>();
 
-        //add the images of the album to the list
-        while (imageCursor.moveToNext()) {
-            if(imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME)).equals(albumName)){
-                File file = new File(imageCursor.getString(imagePathColumn),Type.IMAGE);
-                files.add(file);
+        //add the files(images/videos) of the album to the list
+        while (cursor.moveToNext()) {
+            if(cursor.getString(cursor.getColumnIndex( MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME)).equals(albumName)){
+                if(cursor.getInt(fileTypeColumn)==1){
+                    File file = new File(cursor.getString(filePathColumn),Type.IMAGE);
+                    files.add(file);
+                }else {
+                    File file = new File(cursor.getString(filePathColumn),Type.VIDEO);
+                    files.add(file);
+                }
+
             }
         }
 
-        //add the videos of the album to the list
-        while (videoCursor.moveToNext()) {
-            if(videoCursor.getString(videoCursor.getColumnIndex(MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME)).equals(albumName)){
-                File file = new File(videoCursor.getString(videoPathColumn),Type.VIDEO);
-                files.add(file);
-            }
-        }
 
-        imageCursor.close();
-        videoCursor.close();
+        cursor.close();
         return files;
     }
 
